@@ -1,0 +1,36 @@
+name: kechka
+description: A new Flutter application.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.8.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.0
+  provider: ^4.3.2+3
+  flutter_icons: ^1.1.0
+  jin_widget_helper: ^1.5.3+1
+  cached_network_image: ^2.4.1
+  toast: ^0.1.5
+  flutter_secure_storage: ^3.3.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+  fonts:
+    - family: Space Mono
+      fonts:
+        - asset: assets/fonts/SpaceMono-Regular.ttf
+        - asset: assets/fonts/SpaceMono-Bold.ttf
+          weight: 700
+
