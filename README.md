@@ -1,16 +1,20 @@
-# kechka
+# KechKa
 
-A new Flutter application.
+KechKa is an open source flutter app for managing dialy task.
 
-## Getting Started
+## UI Design
 
-This project is a starting point for a Flutter application.
+[Online Planner App](https://dribbble.com/shots/14700354-Online-Planner-App)
 
-A few resources to get you started if this is your first Flutter project:
+![UI](https://cdn.dribbble.com/users/5031392/screenshots/14700354/media/7991b1d3e0a8ac206490a124e70e09fd.png?compress=1&resize=1000x750)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Get started
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- clone the project
+- run _flutter pub get_
+
+## TODO
+
+- [ ] Data storage
+- [ ] onBoarding screen
+- [ ] Edit Task
