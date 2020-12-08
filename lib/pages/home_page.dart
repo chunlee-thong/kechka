@@ -4,7 +4,6 @@ import 'package:jin_widget_helper/jin_widget_helper.dart';
 import 'package:kechka/constant/app_constant.dart';
 import 'package:kechka/constant/color.dart';
 import 'package:kechka/constant/style.dart';
-import 'package:kechka/model/task_model.dart';
 import 'package:kechka/pages/add_new_task_page.dart';
 import 'package:kechka/provider/task_provider.dart';
 import 'package:kechka/widgets/calendar_day_item.dart';
@@ -71,11 +70,31 @@ class _HomePageState extends State<HomePage> {
             SpaceX(12),
             Expanded(
               child: Stack(
-                children: tasks.map((task) => TaskCard(task: task)).toList(),
+                children: [
+                  generateDivider(),
+                  ...taskProvider.tasks
+                      .map((task) => TaskCard(task: task))
+                      .toList(),
+                ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget generateDivider() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(
+        16,
+        (index) {
+          return Container(
+            margin: EdgeInsets.only(top: 64.0),
+            child: Divider(height: 0),
+          );
+        },
       ),
     );
   }
@@ -85,7 +104,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: () {
         PageNavigator.push(context, AddNewTaskPage());
       },
-      color: primaryColor,
+      color: AppColor.primaryColor,
       textColor: Colors.white,
       icon: Icon(Icons.add),
       shape: JinWidget.roundRect(),
@@ -96,7 +115,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildTodayDate() {
     return SafeArea(
       child: Text(
-        DateTime.now().formatDate("MMMM dd"),
+        taskProvider.selectedDate.formatDate("MMMM dd"),
         style: headerStyle.bold,
       ),
     );

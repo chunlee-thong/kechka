@@ -10,43 +10,39 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: task.totalHeight,
       margin: EdgeInsets.only(top: task.topPosition),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Divider(height: 0),
-          Container(
-            height: task.totalHeight,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Card(
-              margin: EdgeInsets.zero,
-              color: task.color ?? Color(0xFFFFEDE7),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(task.title, style: subtitleStyle.medium),
-                    if (task.endTime != null && task.totalHour != 1) ...[
-                      Divider(),
-                      Row(
-                        children: [
-                          Icon(Icons.access_time, color: Colors.purple, size: 18),
-                          SpaceX(),
-                          Text(task.startTime.format(context)),
-                          Text(" - "),
-                          Text(task.endTime.format(context)),
-                        ],
-                      )
-                    ]
-                  ],
-                ),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Card(
+        margin: EdgeInsets.zero,
+        color: task.color ?? Color(0xFFFFEDE7),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                task.title,
+                style: subtitleStyle.medium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
+              if (task.endTime != null && task.totalHour > 1) ...[
+                Divider(),
+                Row(
+                  children: [
+                    Icon(Icons.access_time, color: Colors.purple, size: 18),
+                    SpaceX(),
+                    Text(task.startTime.format(context)),
+                    Text(" - "),
+                    Text(task.endTime.format(context)),
+                  ],
+                )
+              ]
+            ],
           ),
-          Divider(height: 0),
-        ],
+        ),
       ),
     );
   }

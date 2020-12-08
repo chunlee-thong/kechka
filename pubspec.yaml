@@ -1,6 +1,5 @@
 name: kechka
-description: A new Flutter application.
-
+description: kechka is an open source flutter app for managing dialy task
 version: 1.0.0+1
 
 environment:
@@ -33,4 +32,3 @@ flutter:
         - asset: assets/fonts/SpaceMono-Regular.ttf
         - asset: assets/fonts/SpaceMono-Bold.ttf
           weight: 700
-

@@ -8,13 +8,14 @@ import 'package:kechka/utils/app_utils.dart';
 class CalendarDayItem extends StatelessWidget {
   final DateTime dateTime;
   final bool isSelected;
-  const CalendarDayItem({Key key, this.dateTime, this.isSelected}) : super(key: key);
+  const CalendarDayItem({Key key, this.dateTime, this.isSelected})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Card(
-          color: isSelected ? primaryColor : Color(0xFFF6F6F6),
+          color: isSelected ? AppColor.primaryColor : Color(0xFFF6F6F6),
           shape: JinWidget.roundRect(12),
           child: InkWell(
             onTap: () {
@@ -26,11 +27,13 @@ class CalendarDayItem extends StatelessWidget {
                 children: [
                   Text(
                     "${dateTime.day}",
-                    style: titleStyle.applyColor(isSelected ? Colors.white : Colors.black),
+                    style: titleStyle
+                        .applyColor(isSelected ? Colors.white : Colors.black),
                   ),
                   Text(
                     "${AppUtils.getWeekDayString(dateTime.weekday)}",
-                    style: subtitleStyle.applyColor(isSelected ? Colors.white : Colors.black),
+                    style: subtitleStyle
+                        .applyColor(isSelected ? Colors.white : Colors.black),
                   ),
                 ],
               ),
@@ -42,7 +45,7 @@ class CalendarDayItem extends StatelessWidget {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: primaryColor,
+              color: AppColor.primaryColor,
               shape: BoxShape.circle,
             ),
           )

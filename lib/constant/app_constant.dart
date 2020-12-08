@@ -15,4 +15,10 @@ const List<TimeOfDay> HOURS = [
   TimeOfDay(hour: 15, minute: 0),
   TimeOfDay(hour: 16, minute: 0),
   TimeOfDay(hour: 17, minute: 0),
+  TimeOfDay(hour: 18, minute: 0),
+  TimeOfDay(hour: 19, minute: 0),
+  TimeOfDay(hour: 20, minute: 0),
+  TimeOfDay(hour: 21, minute: 0),
+  TimeOfDay(hour: 22, minute: 0),
+  TimeOfDay(hour: 23, minute: 0),
 ];

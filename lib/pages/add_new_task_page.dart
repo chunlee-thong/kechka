@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:jin_widget_helper/jin_widget_helper.dart';
+import 'package:kechka/constant/color.dart';
+import 'package:kechka/constant/style.dart';
+import 'package:kechka/model/task_model.dart';
+import 'package:kechka/provider/task_provider.dart';
+import 'package:kechka/widgets/simple_text_field.dart';
+import 'package:kechka/widgets/ui_helper.dart';
 
 class AddNewTaskPage extends StatefulWidget {
   AddNewTaskPage({Key key}) : super(key: key);
@@ -7,7 +14,89 @@ class AddNewTaskPage extends StatefulWidget {
   _AddNewTaskPageState createState() => _AddNewTaskPageState();
 }
 
-class _AddNewTaskPageState extends State<AddNewTaskPage> {
+class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
+  TextEditingController titleTC;
+  TextEditingController dateTC;
+  TextEditingController startTimeTC;
+  TextEditingController endTimeTC;
+
+  //
+  DateTime selectedDate;
+  TimeOfDay startTime;
+  TimeOfDay endTime;
+
+  Future<void> onSelectDate() async {
+    DateTime selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null) {
+      selectedDate = selectedDate;
+      String dateTime = selectedDate.formatDate("EEEE,dd MMMM");
+      dateTC.text = dateTime;
+    }
+  }
+
+  Future<void> onSelectTime([bool isStartTime = true]) async {
+    TimeOfDay selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: 8, minute: 0),
+      initialEntryMode: TimePickerEntryMode.dial,
+    );
+
+    if (selectedTime != null) {
+      String time = selectedTime.format(context);
+      if (isStartTime) {
+        startTime = selectedTime;
+        startTimeTC.text = time;
+      } else {
+        endTime = selectedTime;
+        endTimeTC.text = time;
+      }
+    }
+  }
+
+  void onAddTask() {
+    if (isFormValidated) {
+      try {
+        TaskModel task = TaskModel(
+          title: titleTC.text.trim(),
+          dateTime: selectedDate,
+          startTime: startTime,
+          endTime: endTime ?? startTime,
+        );
+        TaskProvider.getProvider(context).onAddTask(task);
+        Navigator.of(context).pop();
+      } catch (e) {
+        UIHelper.showErrorDialog(context, e.toString());
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    titleTC = TextEditingController();
+    dateTC = TextEditingController();
+    startTimeTC = TextEditingController();
+    endTimeTC = TextEditingController();
+    selectedDate = DateTime.now();
+    String dateTime = selectedDate.formatDate("EEEE,dd MMMM");
+    dateTC.text = dateTime;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleTC.dispose();
+    dateTC.dispose();
+    startTimeTC.dispose();
+    endTimeTC.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,6 +106,99 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
         centerTitle: true,
         title: Text("Add new task"),
       ),
+      body: Form(
+        key: formKey,
+        child: ListView(
+          padding: EdgeInsets.all(16),
+          children: [
+            SimpleTextField(
+              controller: titleTC,
+              hint: "title",
+              suffix: Icon(Icons.edit, color: Colors.grey),
+              prefix: Container(
+                width: 8,
+                height: 8,
+                margin: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColor.purple.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            SpaceY(16),
+            SimpleTextField(
+              controller: dateTC,
+              suffix: Icon(Icons.edit, color: Colors.grey),
+              readOnly: true,
+              onTap: onSelectDate,
+              prefix: SmallIconButton(
+                onTap: null,
+                backgroundColor: AppColor.red.withOpacity(0.2),
+                margin: EdgeInsets.all(8),
+                icon: Icon(
+                  Icons.calendar_today,
+                  color: AppColor.red,
+                  size: 18,
+                ),
+              ),
+            ),
+            SpaceY(16),
+            buildTimeSelector(),
+            buildSaveButton(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildSaveButton() {
+    return ActionButton(
+      onPressed: onAddTask,
+      child: Text("Save"),
+      color: AppColor.primaryColor,
+      textColor: Colors.white,
+      shape: JinWidget.roundRect(),
+    );
+  }
+
+  Widget buildTimeSelector() {
+    return Row(
+      children: [
+        SimpleTextField(
+          controller: startTimeTC,
+          hint: "Start time",
+          readOnly: true,
+          onTap: () => onSelectTime(true),
+          prefix: SmallIconButton(
+            onTap: null,
+            backgroundColor: AppColor.primaryColor.withOpacity(0.2),
+            margin: EdgeInsets.all(8),
+            icon: Icon(
+              Icons.access_time,
+              color: AppColor.primaryColor,
+              size: 18,
+            ),
+          ),
+        ).expanded,
+        Text("-", style: subHeaderStyle).marginValue(horizontal: 12),
+        SimpleTextField(
+          controller: endTimeTC,
+          doValidation: false,
+          hint: "End time",
+          readOnly: true,
+          onTap: () => onSelectTime(false),
+          prefix: SmallIconButton(
+            onTap: null,
+            backgroundColor: AppColor.primaryColor.withOpacity(0.2),
+            margin: EdgeInsets.all(8),
+            icon: Icon(
+              Icons.access_time,
+              color: AppColor.primaryColor,
+              size: 18,
+            ),
+          ),
+        ).expanded,
+      ],
     );
   }
 }

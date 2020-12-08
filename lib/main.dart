@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         title: 'KechKa',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: primaryColor,
+          primarySwatch: AppColor.primaryColor,
           fontFamily: "Space Mono",
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
