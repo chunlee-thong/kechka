@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:jin_widget_helper/jin_widget_helper.dart';
+import 'package:kechka/constant/app_constant.dart';
+import 'package:kechka/model/exception.dart';
 import 'package:kechka/model/task_model.dart';
 import 'package:provider/provider.dart';
 
@@ -11,48 +14,50 @@ class TaskProvider extends ChangeNotifier {
   static TaskProvider getProvider(BuildContext context) =>
       Provider.of<TaskProvider>(context, listen: false);
 
-  List<TaskModel> tasks = [];
+  List<TaskModel> _tasks = [];
+  List<TaskModel> _allTask;
+  List<TaskModel> get tasks => _tasks;
+
+  Box<TaskModel> taskBox;
 
   TaskProvider() {
-    tasks.addAll([
-      TaskModel(
-        dateTime: DateTime.now(),
-        startTime: TimeOfDay(hour: 9, minute: 0),
-        endTime: TimeOfDay(hour: 12, minute: 0),
-        title: "Meeting with PR department",
-        color: Color(0xFFEFE0FF),
-      ),
-      TaskModel(
-        dateTime: DateTime.now(),
-        startTime: TimeOfDay(hour: 13, minute: 0),
-        endTime: TimeOfDay(hour: 14, minute: 0),
-        title: "Presentation for client",
-        color: Color(0xFFD3F8FF),
-      ),
-      TaskModel(
-        dateTime: DateTime.now(),
-        startTime: TimeOfDay(hour: 17, minute: 0),
-        endTime: TimeOfDay(hour: 17, minute: 0),
-        title: "Planning for next month",
-      ),
-    ]);
+    taskBox = Hive.box<TaskModel>(AppConstant.TASK_BOX_NAME);
+    _allTask = taskBox.values.toList();
+    getTaskByDate();
   }
 
-  void onAddTask(TaskModel newTask) {
+  Future<void> getTaskByDate() async {
+    if (taskBox.isNotEmpty) {
+      _tasks = taskBox.values
+          .where((task) => task.dateTime.isTheSameDay(selectedDate))
+          .toList();
+    }
+    notifyListeners();
+  }
+
+  Future<void> onAddTask(TaskModel newTask,
+      {bool isEdit = false, TaskModel oldTask}) async {
+    print(newTask.dateTime);
+    if (isEdit) {
+      //Remove old task from ourlist
+      _allTask.removeWhere((task) => task.key == oldTask.key);
+    }
+
     if (newTask.startTime.hour < 8 ||
         newTask.endTime.hour > 23 ||
         newTask.startTime.hour > newTask.endTime.hour) {
-      throw "Invalid hour";
+      throw AddTaskException("Invalid hour");
     }
 
-    List<TaskModel> todayTask = tasks
+    List<TaskModel> todayTask = _allTask
         .where((element) => element.dateTime.isTheSameDay(newTask.dateTime))
         .toList();
-    print("Today task is :${todayTask.length}");
+
+    print(todayTask.length);
 
     for (var task in todayTask) {
       if (task.startTime.hour == newTask.startTime.hour) {
-        throw "Already has a task at this start time";
+        throw AddTaskException("Already has a task at this start time");
       }
 
       bool startTimeIsBetween = newTask.startTime.hour > task.startTime.hour &&
@@ -64,15 +69,28 @@ class TaskProvider extends ChangeNotifier {
           newTask.endTime.hour > task.endTime.hour;
 
       if (startTimeIsBetween || endTimeIsBetween || isOverlap) {
-        throw "Already has a task at this start time";
+        throw AddTaskException("Already has a task at this start time");
       }
     }
-    tasks.add(newTask);
+
+    if (isEdit) {
+      taskBox.put(oldTask.key, newTask);
+    } else {
+      await taskBox.add(newTask);
+    }
+
+    _allTask.add(newTask);
     notifyListeners();
   }
 
-  void onSelectDate(DateTime dateTime) {
+  void deleteTask(TaskModel task) {
+    _allTask.removeWhere((element) => task.key == element.key);
+    taskBox.delete(task.key);
+  }
+
+  void onSelectDate(DateTime dateTime) async {
+    if (dateTime.isTheSameDay(_selectedDate)) return;
     this._selectedDate = dateTime;
-    notifyListeners();
+    await getTaskByDate();
   }
 }

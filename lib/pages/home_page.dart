@@ -56,30 +56,46 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildHourAndTaskList() {
     return Expanded(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.zero,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Column(
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.zero,
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: HOURS.map((time) => HourRow(time: time)).toList(),
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: HOURS.map((time) => HourRow(time: time)).toList(),
+                ),
+                SpaceX(12),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      generateDivider(),
+                      ...taskProvider.tasks
+                          .map((task) => TaskCard(task: task))
+                          .toList(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SpaceX(12),
-            Expanded(
-              child: Stack(
-                children: [
-                  generateDivider(),
-                  ...taskProvider.tasks
-                      .map((task) => TaskCard(task: task))
-                      .toList(),
-                ],
+          ),
+          if (taskProvider.tasks.isEmpty)
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: JinWidget.radius(),
+                  color: AppColor.blue,
+                ),
+                child: Text("No task today"),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

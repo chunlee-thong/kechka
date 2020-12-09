@@ -21,7 +21,8 @@ class CalendarDayItem extends StatelessWidget {
             onTap: () {
               TaskProvider.getProvider(context).onSelectDate(dateTime);
             },
-            child: Padding(
+            child: Container(
+              width: 76,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [

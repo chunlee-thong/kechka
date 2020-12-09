@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppConstant {
   static const double CARD_HEIGHT = 64;
+  static const String TASK_BOX_NAME = "task.box";
+  static const String FONT_NAME = "Poppins";
 }
 
 const List<TimeOfDay> HOURS = [

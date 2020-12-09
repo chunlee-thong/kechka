@@ -16,19 +16,24 @@ dependencies:
   cached_network_image: ^2.4.1
   toast: ^0.1.5
   flutter_secure_storage: ^3.3.5
+  hive: ^1.4.4+1
+  hive_flutter: ^0.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  hive_generator: ^0.8.2
+  build_runner: ^1.10.9
 flutter:
   uses-material-design: true
 
   assets:
     - assets/images/
   fonts:
-    - family: Space Mono
+    - family: Poppins
       fonts:
-        - asset: assets/fonts/SpaceMono-Regular.ttf
-        - asset: assets/fonts/SpaceMono-Bold.ttf
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-Bold.ttf
           weight: 700

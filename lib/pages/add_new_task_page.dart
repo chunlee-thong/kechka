@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:jin_widget_helper/jin_widget_helper.dart';
 import 'package:kechka/constant/color.dart';
 import 'package:kechka/constant/style.dart';
+import 'package:kechka/model/exception.dart';
 import 'package:kechka/model/task_model.dart';
 import 'package:kechka/provider/task_provider.dart';
 import 'package:kechka/widgets/simple_text_field.dart';
 import 'package:kechka/widgets/ui_helper.dart';
 
 class AddNewTaskPage extends StatefulWidget {
-  AddNewTaskPage({Key key}) : super(key: key);
+  final TaskModel task;
+  AddNewTaskPage({Key key, this.task}) : super(key: key);
 
   @override
   _AddNewTaskPageState createState() => _AddNewTaskPageState();
 }
 
-class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
+class _AddNewTaskPageState extends State<AddNewTaskPage>
+    with FormPageMixin, AfterBuildMixin {
   TextEditingController titleTC;
   TextEditingController dateTC;
   TextEditingController startTimeTC;
@@ -25,17 +28,19 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
   TimeOfDay startTime;
   TimeOfDay endTime;
 
+  bool get editMode => widget.task != null;
+
   Future<void> onSelectDate() async {
-    DateTime selectedDate = await showDatePicker(
+    DateTime pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
 
-    if (selectedDate != null) {
-      selectedDate = selectedDate;
-      String dateTime = selectedDate.formatDate("EEEE,dd MMMM");
+    if (pickedDate != null) {
+      this.selectedDate = pickedDate;
+      String dateTime = pickedDate.formatDate("EEEE,dd MMMM");
       dateTC.text = dateTime;
     }
   }
@@ -59,7 +64,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
     }
   }
 
-  void onAddTask() {
+  void onAddTask() async {
     if (isFormValidated) {
       try {
         TaskModel task = TaskModel(
@@ -68,23 +73,40 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
           startTime: startTime,
           endTime: endTime ?? startTime,
         );
-        TaskProvider.getProvider(context).onAddTask(task);
+        await TaskProvider.getProvider(context)
+            .onAddTask(task, isEdit: editMode, oldTask: widget.task);
+        TaskProvider.getProvider(context).getTaskByDate();
         Navigator.of(context).pop();
-      } catch (e) {
+      } on AddTaskException catch (e) {
         UIHelper.showErrorDialog(context, e.toString());
       }
     }
   }
 
-  @override
-  void initState() {
-    titleTC = TextEditingController();
-    dateTC = TextEditingController();
+  void onInit() {
+    if (widget.task != null) {
+      startTime = widget.task.startTime;
+      endTime = widget.task.endTime;
+    }
+    titleTC = TextEditingController(text: widget.task?.title);
     startTimeTC = TextEditingController();
     endTimeTC = TextEditingController();
-    selectedDate = DateTime.now();
+    dateTC = TextEditingController();
+    selectedDate =
+        widget.task?.dateTime ?? TaskProvider.getProvider(context).selectedDate;
     String dateTime = selectedDate.formatDate("EEEE,dd MMMM");
     dateTC.text = dateTime;
+  }
+
+  @override
+  void afterBuild(BuildContext context) {
+    startTimeTC.text = startTime?.format(context);
+    endTimeTC.text = endTime?.format(context);
+  }
+
+  @override
+  void initState() {
+    onInit();
     super.initState();
   }
 
@@ -104,7 +126,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0.0,
         centerTitle: true,
-        title: Text("Add new task"),
+        title: Text(editMode ? "Edit task" : "Add new task"),
       ),
       body: Form(
         key: formKey,
@@ -154,7 +176,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> with FormPageMixin {
   Widget buildSaveButton() {
     return ActionButton(
       onPressed: onAddTask,
-      child: Text("Save"),
+      child: Text(editMode ? "Update" : "Save"),
       color: AppColor.primaryColor,
       textColor: Colors.white,
       shape: JinWidget.roundRect(),
