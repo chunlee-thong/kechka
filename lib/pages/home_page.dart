@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   child: Stack(
                     children: [
                       generateDivider(),
-                      ...taskProvider.tasks
+                      ...taskProvider.tasksByDate
                           .map((task) => TaskCard(task: task))
                           .toList(),
                     ],
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          if (taskProvider.tasks.isEmpty)
+          if (taskProvider.tasksByDate.isEmpty)
             Align(
               alignment: Alignment.center,
               child: Container(

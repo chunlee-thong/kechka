@@ -14,9 +14,9 @@ class TaskProvider extends ChangeNotifier {
   static TaskProvider getProvider(BuildContext context) =>
       Provider.of<TaskProvider>(context, listen: false);
 
-  List<TaskModel> _tasks = [];
+  List<TaskModel> _taskBydate = [];
   List<TaskModel> _allTask;
-  List<TaskModel> get tasks => _tasks;
+  List<TaskModel> get tasksByDate => _taskBydate;
 
   Box<TaskModel> taskBox;
 
@@ -28,7 +28,7 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> getTaskByDate() async {
     if (taskBox.isNotEmpty) {
-      _tasks = taskBox.values
+      _taskBydate = taskBox.values
           .where((task) => task.dateTime.isTheSameDay(selectedDate))
           .toList();
     }
