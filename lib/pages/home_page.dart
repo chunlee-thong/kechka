@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.center,
               child: Container(
                 padding: EdgeInsets.all(8),
+                margin: EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
                   borderRadius: JinWidget.radius(),
                   color: AppColor.blue,
@@ -130,6 +131,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildTodayDate() {
     return SafeArea(
+      bottom: false,
       child: Text(
         taskProvider.selectedDate.formatDate("MMMM dd"),
         style: headerStyle.bold,

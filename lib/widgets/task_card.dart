@@ -38,7 +38,7 @@ class TaskCard extends StatelessWidget {
                   Text(
                     "${task.title}",
                     style: subtitleStyle.medium,
-                    maxLines: 1,
+                    maxLines: task.totalHour > 1 ? 2 : 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (task.endTime != null && task.totalHour > 1) ...[
