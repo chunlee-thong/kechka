@@ -13,7 +13,7 @@ class HourRow extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         "${time.format(context)}",
-        style: subtitleStyle.apply(color: Colors.black54),
+        style: subtitleStyle.apply(color: Colors.black45),
       ),
     );
   }

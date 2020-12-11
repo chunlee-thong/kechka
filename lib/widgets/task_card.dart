@@ -23,6 +23,7 @@ class TaskCard extends StatelessWidget {
         key: Key(task.key.toString()),
         child: Card(
           margin: EdgeInsets.zero,
+          shape: JinWidget.roundRect(16),
           color: task.color ?? Color(0xFFFFEDE7),
           child: InkWell(
             onTap: () {

@@ -4,9 +4,9 @@ KechKa is an open source flutter app for managing dialy task.
 
 ## Feature
 
-- [x] Data storage
+- [x] Data storage (Hive DB)
 - [x] Add and Edit Task
-- [ ] Notification reminder
+- [ ] Notification reminder (flutter local notification)
 
 ## UI Design
 
@@ -18,3 +18,4 @@ KechKa is an open source flutter app for managing dialy task.
 
 - clone the project
 - run _flutter pub get_
+- run _flutter run_

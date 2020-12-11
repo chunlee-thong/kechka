@@ -37,7 +37,6 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> onAddTask(TaskModel newTask,
       {bool isEdit = false, TaskModel oldTask}) async {
-    print(newTask.dateTime);
     if (isEdit) {
       //Remove old task from ourlist
       _allTask.removeWhere((task) => task.key == oldTask.key);

@@ -79,6 +79,9 @@ class _AddNewTaskPageState extends State<AddNewTaskPage>
         Navigator.of(context).pop();
       } on AddTaskException catch (e) {
         UIHelper.showErrorDialog(context, e.toString());
+      } catch (e) {
+        print(e.stackTrace.toString());
+        UIHelper.showErrorDialog(context, "Unexpected error occur");
       }
     }
   }
